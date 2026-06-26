@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculadora de Notas</title>
+    <link rel="stylesheet" href="../styles/styles.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+
+</head>
+<body>
+    <header>
+    <h1>Calculadora de Notas</h1>
+    
+    <div class="theme-switch-wrapper">
+        <label class="theme-switch" for="checkbox">
+            <input type="checkbox" id="checkbox" />
+            <div class="slider round"></div>
+        </label>
+        <span class="mode-label">Modo Claro</span>
+    </div>
+</header>
+
+    <main>
+        <section class="input-section">
+            <h2>Ingresar Nota</h2>
+            <input type="number" id="notaInput" placeholder="Ingrese una nota (0-10)" min="0" max="10" />
+            <button id="agregarBtn">Agregar Nota</button>
+        </section>
+
+        <section class="lista-section">
+            <h2>Notas Agregadas</h2>
+            <ul id="listaNotas"></ul>
+        </section>
+
+       <section class="resultado-section">
+    <button id="resetBtn">Borrar Todo</button>
+    <button id="calcularBtn">Calcular Promedio</button>
+    
+    <div class="resultado-wrapper"> 
+        <p id="resultado"></p>
+    </div>
+    
+    <div id="calculosAdicionales">
+        <p id="notaAlta"></p>
+        <p id="notaBaja"></p>
+        <p id="cantidadNotas"></p>
+    </div>
+</section>
+        </section>
+    </main>
+
+    <footer>
+        <p>Autor: Jesús Juárez</p>
+    </footer>
+
+    <script>
+        const input = document.getElementById('notaInput');
+        const agregarBtn = document.getElementById('agregarBtn');
+        const listaNotas = document.getElementById('listaNotas');
+        const calcularBtn = document.getElementById('calcularBtn');
+        const resultado = document.getElementById('resultado');
+        const resetBtn = document.getElementById('resetBtn');
+        const notaAlta = document.getElementById('notaAlta');
+        const notaBaja = document.getElementById('notaBaja');
+        const cantidadNotas = document.getElementById('cantidadNotas');
+        const checkbox = document.getElementById('checkbox');
+        const modeLabel = document.querySelector('.mode-label'); // Para actualizar el texto "Modo Claro/Oscuro"
+
+//Funcion para el modo oscuro
+function aplicarTema(isDarkMode) {
+    if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+        modeLabel.textContent = 'Modo Oscuro';
+        localStorage.setItem('theme', 'dark'); // Guardar preferencia
+    } else {
+        document.body.classList.remove('dark-mode');
+        modeLabel.textContent = 'Modo Claro';
+        localStorage.setItem('theme', 'light'); // Guardar preferencia
+    }
+}
+
+function guardarNotas() {
+    localStorage.setItem('notasCalculadora', JSON.stringify(notas));
+}
+
+function cargarNotas() {
+    const notasGuardadas = localStorage.getItem('notasCalculadora');
+    return notasGuardadas ? JSON.parse(notasGuardadas) : [];
+}
+
+        // Variable global para almacenar las notas
+let notas = cargarNotas();
+
+// Función principal para agregar notas y crear los elementos de la lista
+agregarBtn.addEventListener('click', () => {
+    const nota = parseFloat(input.value);
+
+    if (!isNaN(nota) && nota > 0 && nota <= 10) {
+        // 1. Agregar nota al array
+        notas.push(nota);
+        guardarNotas();
+        
+        // 2. Dibujar la nota y los botones
+        renderizarNotas(); // Funcion pa dibujar toda la lista
+
+        input.value = ""; // Limpiar input
+
+    } else {
+        alert("Error, ingrese un valor del 1 al 10.");
+    }
+});
+
+// ----------------------------------------------------------------------
+// NUEVA FUNCIÓN: Redibuja la lista completa de notas
+// ----------------------------------------------------------------------
+function renderizarNotas() {
+    listaNotas.innerHTML = ''; // Limpia el contenido actual de la lista
+    
+    notas.forEach((nota, index) => {
+        const li = document.createElement('li');
+        
+        // Contenedor para el texto y los botones
+        const notaDisplay = document.createElement('span');
+        notaDisplay.textContent = nota.toFixed(2); // Muestra la nota con 2 decimales
+        notaDisplay.classList.add('nota-display');
+        
+        // Botón de ELIMINAR
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = ' 🗑️ Borrar';
+        deleteBtn.classList.add('delete-btn'); // Clase para CSS
+        deleteBtn.onclick = () => eliminarNota(index); // Llama a la función de eliminación
+
+        // Botón de EDITAR
+        const editBtn = document.createElement('button');
+        editBtn.textContent = ' ✏️ Editar';
+        editBtn.classList.add('edit-btn'); // Clase para CSS
+        editBtn.onclick = () => editarNota(index, nota); // Llama a la función de edición
+        
+        li.appendChild(notaDisplay);
+        li.appendChild(editBtn);
+        li.appendChild(deleteBtn);
+        listaNotas.appendChild(li);
+    });
+}
+
+
+// ----------------------------------------------------------------------
+// NUEVA FUNCIÓN: Lógica para borrar una nota
+// ----------------------------------------------------------------------
+function eliminarNota(index) {
+    // 1. Borra 1 elemento desde la posición 'index'
+    notas.splice(index, 1); 
+    guardarNotas();
+    
+    // 2. Vuelve a dibujar la lista (para actualizar los índices)
+    renderizarNotas(); 
+}
+
+// ----------------------------------------------------------------------
+// NUEVA FUNCIÓN: Lógica para editar una nota
+// ----------------------------------------------------------------------
+function editarNota(index, notaActual) {
+    const nuevaNotaStr = prompt(`Editando nota ${notaActual}. Ingrese el nuevo valor (0-10):`, notaActual);
+    
+    if (nuevaNotaStr !== null) { // Si el usuario no cancela el prompt
+        const nuevaNota = parseFloat(nuevaNotaStr);
+        
+        // Validación de la nueva nota
+        if (!isNaN(nuevaNota) && nuevaNota >= 0 && nuevaNota <= 10) {
+            notas[index] = nuevaNota; // Actualiza el array
+            guardarNotas();
+            renderizarNotas(); // Redibuja
+        } else {
+            alert("Valor ingresado no válido. La nota debe estar entre 0 y 10.");
+        }
+    }
+}
+// ----------------------------------------------------------------------
+// vinculacion del boton de calcular
+// ----------------------------------------------------------------------
+calcularBtn.addEventListener('click',calcularPromedio); 
+
+// ----------------------------------------------------------------------
+// boton para borrar todo
+// ----------------------------------------------------------------------
+resetBtn.addEventListener('click', () => {
+    notas = []; // Vacía el array
+    guardarNotas();
+    renderizarNotas(); // Limpia la lista en el HTML
+    resultado.textContent = 'Promedio final: --'; // Limpia el promedio
+    resultado.className = '';
+    // Limpia los cálculos adicionales:
+    notaAlta.textContent = '';
+    notaBaja.textContent = '';
+    cantidadNotas.textContent = '';
+});
+
+
+// ----------------------------------------------------------------------
+// FUNCIÓN UNIFICADA PARA CALCULAR TODO (PROMEDIO + ADICIONALES + FEEDBACK VISUAL)
+// ----------------------------------------------------------------------
+function calcularPromedio() {
+    if (notas.length === 0) {
+        resultado.textContent = "No se ingresaron notas.";
+        resultado.className = ''; // Quita el color si estaba antes
+        notaAlta.textContent = '';
+        notaBaja.textContent = '';
+        cantidadNotas.textContent = '';
+        return;
+    }
+    
+    const suma = notas.reduce((a, b) => a + b, 0);
+    const promedio = suma / notas.length;
+    
+    // --- LÓGICA DE FEEDBACK VISUAL (ROJO/VERDE) ---
+    const notaMinimaAprobacion = 6;
+    let feedbackColor = '';
+    let mensaje = '';
+    
+    if (promedio >= notaMinimaAprobacion) {
+        feedbackColor = 'green-aprobado'; 
+        mensaje = `¡Aprobado! Promedio: ${promedio.toFixed(2)}`;
+    } else {
+        feedbackColor = 'red-reprobado'; 
+        mensaje = `Desaprobado. Promedio: ${promedio.toFixed(2)}`;
+        resultado.textContent = mensaje;
+        resultado.className = feedbackColor;
+    }
+    
+    // Asigna el texto y la clase CSS para el color
+    resultado.textContent = mensaje;
+    resultado.className = feedbackColor; 
+    
+    
+    // --- CÁLCULOS ADICIONALES ---
+    const notaMaxima = Math.max(...notas);
+    const notaMinima = Math.min(...notas);
+    const totalNotas = notas.length;
+
+    notaAlta.textContent = `Nota más alta: ${notaMaxima.toFixed(2)}`;
+    notaBaja.textContent = `Nota más baja: ${notaMinima.toFixed(2)}`;
+    cantidadNotas.textContent = `Total de notas ingresadas  : ${totalNotas}`;
+}
+// Listener para el interruptor
+checkbox.addEventListener('change', function() {
+    aplicarTema(this.checked);
+});
+
+// Cargar la preferencia del tema al inicio de la página
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+    checkbox.checked = true; // Marca el checkbox
+    aplicarTema(true);      // Aplica el tema oscuro
+} else {
+    // Si no hay preferencia o es 'light', asegura el tema claro
+    aplicarTema(false);
+}
+    renderizarNotas();
+    </script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+/* Fuente y fondo general */
+body {
+    font-family: 'Playfair Display', serif;
+    background: linear-gradient(135deg, #1a0346, #750375);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #333;
+    animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Animación suave al cargar */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Encabezado */
+header {
+    background: rgba(167, 0, 144, 0.2);
+    backdrop-filter: blur(10px);
+    width: 100%;
+    padding: 25px;
+    text-align: center;
+    color: rgb(202, 202, 202);
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Contenedor principal con efecto glassmorphism */
+main {
+    background: rgba(238, 232, 232, 0.85);
+    width: 90%;
+    max-width: 600px;
+    margin-top: 25px;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    animation: popIn 0.6s ease;
+}
+
+/* Efecto de entrada del panel */
+@keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+h2 {
+    color: #21014e;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* Input elegante */
+input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #1c014e;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    outline: none;
+    transition: 0.3s;
+    font-family: 'Playfair Display', serif;
+}
+
+input:focus {
+    border-color: #a08300;
+    box-shadow: 0 0 10px rgba(46, 125, 50, 0.3);
+}
+
+/* Botones con animación */
+button {
+    background: #3b023b;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.3s;
+    font-size: 1rem;
+    font-family: 'Playfair Display', serif;
+}
+
+button:hover {
+    background: #060013;
+    transform: scale(1.05);
+}
+
+/* Lista de notas con animación */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    animation: slideIn 0.3s ease;
+    font-weight: 500;
+    font-family: 'Playfair Display', serif;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Pie de página */
+footer {
+    margin: 20px 0;
+    color: rgb(201, 201, 201);
+    font-size: 0.9rem;
+    text-shadow: 0 0 4px rgba(0,0,0,0.4);
+}
+/* --- MEJORA: Separación de la nota y los botones --- */
+
+.nota-display {
+    /* Mueve los elementos siguientes (botones) a la derecha */
+    margin-right: 15px; 
+    /* Opcional: Aseguramos que el texto esté centrado verticalmente si hay padding */
+    display: inline-block; 
+}
+
+/* Opcional: Mejorar el espaciado entre los botones también */
+li .edit-btn {
+    margin-right: 5px; /* Pequeño espacio entre Editar y Eliminar */
+}
+/* --- ESTILOS PARA EL FEEDBACK VISUAL (APROBADO/DESAPROBADO) --- */
+
+#resultado {
+    display: inline-block;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
+    /* Asegúrate de que el texto sea blanco para que resalte en el fondo de color */
+    color: rgb(255, 255, 255) !important; 
+    font-weight: 700;
+}
+
+/* CLASE VERDE (Aprobado) */
+.green-aprobado {
+    background-color: #4CAF50 !important; /* Verde limpio */
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.6); /* Sombra verde sutil */
+}
+
+/* CLASE ROJA (Desaprobado/Reprobado) */
+.red-reprobado {
+    background-color: #D32F2F !important;
+    box-shadow: 0 0 15px rgba(211, 47, 47, 0.6); /* Sombra roja sutil */
+}
+
+/* --- ESTILOS DEL INTERRUPTOR --- */
+
+.theme-switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.theme-switch {
+    display: inline-block;
+    height: 34px;
+    position: relative;
+    width: 60px;
+    margin-right: 10px;
+}
+
+.theme-switch input {
+    display: none;
+}
+
+.slider {
+    background-color: #ccc;
+    bottom: 0;
+    cursor: pointer;
+    left: 0;
+    right: 0;
+    top: 0;
+    position: absolute;
+    transition: 0.4s;
+}
+
+.slider:before {
+    background-color: #fff;
+    bottom: 4px;
+    content: "";
+    height: 26px;
+    left: 4px;
+    position: absolute;
+    transition: 0.4s;
+    width: 26px;
+}
+
+input:checked + .slider {
+    background-color: #3b023b; /* Color del fondo del switch en modo oscuro */
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.mode-label {
+    color: rgb(202, 202, 202); /* Color del texto del header */
+    font-size: 0.9rem;
+}
+
+/* --- DEFINICIÓN DEL MODO OSCURO --- */
+
+body.dark-mode {
+    /* Fondo Oscuro */
+    background: linear-gradient(135deg, #0f001f, #3a003a); 
+    color: #f0f0f0; /* Texto claro general */
+}
+
+/* Encabezado */
+body.dark-mode header {
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode header h1 {
+    color: #f0f0f0;
+}
+
+/* Contenedor principal (main) */
+body.dark-mode main {
+    background: rgba(30, 30, 30, 0.9); /* Fondo principal oscuro */
+    box-shadow: 0 8px 20px rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+}
+
+body.dark-mode h2 {
+    color: #ff99ff; /* Títulos */
+}
+
+/* Input y botones */
+body.dark-mode input {
+    border: 2px solid #ff99ff; 
+    background: #333;
+    color: #f0f0f0;
+}
+
+body.dark-mode input:focus {
+    border-color: #ff33ff;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+}
+
+body.dark-mode button {
+    background: #ff99ff;
+    color: #111;
+}
+
+body.dark-mode button:hover {
+    background: #ff33ff;
+    transform: scale(1.05);
+}
+
+/* Lista de notas (li) */
+body.dark-mode li {
+    background: #3a003a; /* Fondo de la nota oscuro */
+    color: #f0f0f0;
+    border-left: 5px solid #ff99ff;
+}
+
+/* Cálculos adicionales */
+body.dark-mode #calculosAdicionales p {
+    color: #e0e0e0;
+}
+
+body.dark-mode footer {
+    color: #e0e0e0;
+}
+
